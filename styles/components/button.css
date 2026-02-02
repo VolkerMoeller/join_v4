@@ -1,0 +1,18 @@
+.btn {
+    appearance: none;
+    border: 1px solid var(--border);
+    background: var(--card);
+    padding: 10px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn--nav {
+    width: 100%;
+    text-align: left;
+}

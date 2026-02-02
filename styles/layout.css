@@ -1,0 +1,42 @@
+.app {
+    min-height: 100%;
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+}
+
+.app__header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--card);
+}
+
+.app__brand {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.app__main {
+    padding: 16px;
+}
+
+@media (min-width: 900px) {
+    .app {
+        grid-template-columns: 260px 1fr;
+        grid-template-rows: auto 1fr;
+    }
+
+    .nav {
+        grid-row: 2;
+        grid-column: 1;
+    }
+
+    .app__main {
+        grid-row: 2;
+        grid-column: 2;
+        padding: 24px;
+    }
+
+    .app__header {
+        grid-column: 1 / -1;
+    }
+}

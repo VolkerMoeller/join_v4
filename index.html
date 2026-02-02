@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JOIN v4</title>
+    <link rel="stylesheet" href="./styles/base.css" />
+    <link rel="stylesheet" href="./styles/layout.css" />
+    <link rel="stylesheet" href="./styles/components/button.css" />
+    <link rel="stylesheet" href="./styles/components/nav.css" />
+    <link rel="stylesheet" href="./styles/components/overlay.css" />
+</head>
+
+<body>
+    <div class="app" id="appRoot">
+        <header class="app__header">
+            <div class="app__brand">JOIN</div>
+        </header>
+
+        <nav class="nav" aria-label="Primary">
+            <button class="btn btn--nav" data-nav="summary" type="button">Summary</button>
+            <button class="btn btn--nav" data-nav="add" type="button">Add</button>
+        </nav>
+
+        <main class="app__main" id="viewRoot" aria-live="polite"></main>
+
+        <div class="overlay-root" id="overlayRoot" aria-hidden="true"></div>
+</body>
+
+</html>
