@@ -36,6 +36,11 @@ export async function setView(viewName, viewRoot, ctx) {
         entry.initialized = true;
     }
 
+    // NEW: bind DOM handlers every time (delegation-friendly)
+    if (typeof entry.module.bindDom === 'function') {
+        entry.module.bindDom(viewRoot, ctx);
+    }
+
     // update always
     entry.module.updateContent();
 }
