@@ -1,0 +1,11 @@
+/* Field component */
+
+.field {
+  display: block;
+}
+
+.field__control {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}

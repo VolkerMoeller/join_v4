@@ -33,7 +33,7 @@ export async function setView(viewName, viewRoot, ctx) {
     // init once
     if (!entry.initialized) {
         await entry.module.ensureInitialized(ctx);
-        entry.initialized = true;
+        entry.initialized = true;   
     }
 
     // NEW: bind DOM handlers every time (delegation-friendly)
