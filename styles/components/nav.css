@@ -1,16 +1,36 @@
 .nav {
+    height: 100%;
     display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    align-items: stretch;
     gap: 8px;
     padding: 12px 16px;
     border-bottom: 1px solid var(--border);
     background: var(--card);
 }
 
+.nav button {
+    height: 100%;
+    display: grid;
+    place-items: center;
+}
+
+
 @media (min-width: 900px) {
     .nav {
+        height: 100%;
+        grid-template-columns: 1fr;
+        align-content: start;
         border-bottom: none;
         border-right: 1px solid var(--border);
-        height: 100%;
         align-content: start;
+    }
+
+    .nav button {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 12px;
+        width: 100%;
     }
 }
