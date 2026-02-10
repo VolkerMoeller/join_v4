@@ -1,5 +1,4 @@
-import { OverlayManager } from '../../ui/overlays.js';
-
+// src/views/add/add.js
 export const AddView = {
   name: 'add',
 
@@ -8,27 +7,29 @@ export const AddView = {
     return res.text();
   },
 
-  async ensureInitialized() {
+  async ensureInitialized(ctx) {
     // init once: später z.B. Daten preload, nothing DOM-related here
   },
 
   /**
    * Bind DOM events for this view. Called after every HTML render.
-   * Uses event delegation so we don't leak listeners across re-renders.
+   * Returns a cleanup function so router can unbind on view change.
    * @param {HTMLElement} viewRoot
+   * @param {any} ctx
    */
-  bindDom(viewRoot) {
-    // Prevent double-binding if bindDom is called again while the same DOM is mounted.
-    if (viewRoot.dataset.boundAdd === '1') return;
-    viewRoot.dataset.boundAdd = '1';
+  bindDom(viewRoot, ctx) {
+    const overlay = ctx?.overlay;
+
+    const scopeRoot = viewRoot.querySelector('[data-scope="assigned"]');
+    if (!scopeRoot) return;
 
     const getEls = () => {
-      const openBtn = viewRoot.querySelector('#assignedOpen');
-      const closeBtn = viewRoot.querySelector('#assignedClose');
-      const control = viewRoot.querySelector('#assignedControl');
-      const dropdown = viewRoot.querySelector('#assignedDropdown');
-      const input = viewRoot.querySelector('#assignedInput');
-      return { openBtn, closeBtn, control, dropdown, input };
+      const control = scopeRoot.querySelector('[data-assigned="control"]');
+      const dropdown = scopeRoot.querySelector('[data-assigned="dropdown"]');
+      const openBtn = scopeRoot.querySelector('[data-action="ASSIGNED_OPEN"]');
+      const closeBtn = scopeRoot.querySelector('[data-action="ASSIGNED_CLOSE"]');
+      const input = scopeRoot.querySelector('#assignedInput');
+      return { control, dropdown, openBtn, closeBtn, input };
     };
 
     const closeAssignedUi = () => {
@@ -47,42 +48,63 @@ export const AddView = {
       openBtn.hidden = true;
       closeBtn.hidden = false;
 
-      OverlayManager.open(
+      overlay?.open?.(
         'add.assigned',
         (t) => control.contains(t) || dropdown.contains(t),
         closeAssignedUi
       );
     };
 
-    // 1) Click delegation for open/close buttons
-    viewRoot.addEventListener('click', (event) => {
-      const t = event.target;
+    const onClick = (event) => {
+      const el = event.target.closest('[data-action]');
+      if (!el || !scopeRoot.contains(el)) return;
 
-      if (t.closest('#assignedOpen')) {
-        if (OverlayManager.isActive('add.assigned')) return;
+      const action = el.dataset.action;
+
+      if (action === 'ASSIGNED_OPEN') {
+        if (overlay?.isActive?.('add.assigned')) return;
         openAssignedUi();
         return;
       }
 
-      if (t.closest('#assignedClose')) {
-        OverlayManager.close('add.assigned'); // calls closeAssignedUi via manager
+      if (action === 'ASSIGNED_CLOSE') {
+        overlay?.close?.('add.assigned');
         return;
       }
-    });
 
-    // 2) Focus handling (optional): focus opens if closed
-    viewRoot.addEventListener('focusin', (event) => {
-      const t = event.target;
-      if (!(t instanceof HTMLElement)) return;
+      if (action === 'ASSIGNED_PICK') {
+        const name = el.dataset.name;
+        // hier würdest du später "assigned hinzufügen" machen
+        // vorerst nur: input befüllen (oder multi-select chips)
+        const { input } = getEls();
+        if (input && name) input.value = name;
+        return;
+      }
+    };
 
-      if (t.id === 'assignedInput') {
-        if (OverlayManager.isActive('add.assigned')) return;
+    const onFocusIn = (event) => {
+      const el = event.target;
+      if (!(el instanceof HTMLElement)) return;
+      if (!scopeRoot.contains(el)) return;
+
+      if (el.dataset.action === 'ASSIGNED_FOCUS' || el.id === 'assignedInput') {
+        if (overlay?.isActive?.('add.assigned')) return;
         openAssignedUi();
       }
-    });
+    };
+
+    viewRoot.addEventListener('click', onClick);
+    viewRoot.addEventListener('focusin', onFocusIn);
+
+    return () => {
+      viewRoot.removeEventListener('click', onClick);
+      viewRoot.removeEventListener('focusin', onFocusIn);
+      overlay?.close?.('add.assigned');
+    };
   },
 
-  updateContent() {
+
+  updateContent(ctx) {
     // optional: called on every navigation to this view
   },
 };

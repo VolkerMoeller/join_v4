@@ -1,16 +1,25 @@
 <section class="view view--add">
     <h1>Add</h1>
 
-    <div class="field">
+    <div class="field field--assigned" data-scope="assigned">
         <label class="field__label" for="assignedInput">Assigned</label>
-        <div class="field__control" id="assignedControl">
-            <input id="assignedInput" type="text" autocomplete="off" placeholder="Select contacts" />
-            <button class="btn" id="assignedOpen" type="button">▼</button>
-            <button class="btn" id="assignedClose" type="button" hidden>▲</button>
+
+        <div class="field__control" data-assigned="control">
+            <input class="field__input" id="assignedInput" type="text" autocomplete="off" placeholder="Select contacts"
+                data-action="ASSIGNED_FOCUS" />
+
+            <button class="btn" type="button" data-action="ASSIGNED_OPEN" aria-label="Open assigned">
+                ▼
+            </button>
+
+            <button class="btn" type="button" data-action="ASSIGNED_CLOSE" aria-label="Close assigned" hidden>
+                ▲
+            </button>
         </div>
-        <div class="dropdown" id="assignedDropdown" hidden>
-            <button class="btn" type="button">Alice</button>
-            <button class="btn" type="button">Bob</button>
+
+        <div class="dropdown" data-assigned="dropdown" hidden>
+            <button class="btn" type="button" data-action="ASSIGNED_PICK" data-name="Alice">Alice</button>
+            <button class="btn" type="button" data-action="ASSIGNED_PICK" data-name="Bob">Bob</button>
         </div>
     </div>
 </section>
