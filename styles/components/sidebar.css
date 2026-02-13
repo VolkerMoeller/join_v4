@@ -47,15 +47,15 @@
     .sidebar__legal {
         height: 100%;
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(2, 1fr);
         align-items: stretch;
-        gap: 8px;
+        gap: 0;
         padding: 12px 16px;
     }
 
     .sidebar__legal button {
         height: 100%;
-        display: grid;
+        display: flex;
         place-items: center;
     }
 

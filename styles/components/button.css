@@ -16,3 +16,9 @@
     width: 100%;
     text-align: left;
 }
+
+.btn--legal {
+    width: 100%;
+    text-align: left;
+    border: none;
+}
