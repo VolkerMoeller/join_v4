@@ -20,19 +20,17 @@
 }
 
 .sidebar__logo {
-    display: none;
     grid-row: 1;
 }
 
 .sidebar__nav {
-    display: none;
     grid-row: 2;
 }
 
 .sidebar__legal {
-    display: none;
     grid-row: 3;
 }
+
 
 @media (min-width: 900px) {
     .app {
@@ -44,19 +42,6 @@
         grid-row: 1 / -1;
         grid-column: 1;
     }
-
-    .sidebar__logo {
-        display: flex;
-    }
-
-    .sidebar__nav {
-        display: flex;
-    }
-
-    .sidebar__legal {
-        display: flex;
-    }
-
 
     .app__main {
         grid-row: 2;
