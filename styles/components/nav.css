@@ -1,15 +1,20 @@
-.nav {
+.sidebar {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+}
+
+.sidebar__nav {
     height: 100%;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     align-items: stretch;
     gap: 8px;
     padding: 12px 16px;
-    border-bottom: 1px solid var(--border);
-    background: var(--card);
 }
 
-.nav button {
+.sidebar__nav button {
     height: 100%;
     display: grid;
     place-items: center;
@@ -17,16 +22,19 @@
 
 
 @media (min-width: 900px) {
-    .nav {
+    .sidebar {
+        border-right: 1px solid var(--border);
+    }
+
+    .sidebar__nav {
         height: 100%;
         grid-template-columns: 1fr;
         align-content: start;
         border-bottom: none;
-        border-right: 1px solid var(--border);
         align-content: start;
     }
 
-    .nav button {
+    .sidebar__nav button {
         display: flex;
         align-items: center;
         justify-content: flex-start;
