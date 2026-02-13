@@ -3,11 +3,13 @@ import { registerView, setView } from './router.js';
 import { OverlayManager } from './ui/overlays.js';
 import { SummaryView } from './views/summary/summary.js';
 import { AddView } from './views/add/add.js';
+import { BoardView } from './views/board/board.js';
 
 const viewRoot = document.getElementById('viewRoot');
 
 registerView(SummaryView);
 registerView(AddView);
+registerView(BoardView);
 
 // ctx als Capability-Objekt (nicht nur open)
 const ctx = { overlay: OverlayManager };
