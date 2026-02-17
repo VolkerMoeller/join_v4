@@ -1,3 +1,4 @@
+
 body[data-layout="auth"] .appShell {
     min-height: 100vh;
     display: grid;
@@ -7,4 +8,25 @@ body[data-layout="auth"] .appShell {
 
 body[data-layout="auth"] #viewRoot {
     width: min(420px, 100%);
+}
+
+body[data-layout="auth"] .app {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+}
+
+body[data-layout="auth"] .sidebar {
+    display: none;
+}
+
+body[data-layout="auth"] .app__header {
+    display: none;
+}
+
+@media (min-width: 900px) {
+    body[data-layout="auth"] .app__main {
+        grid-row: 1;
+        grid-column: 1;
+        padding: 24px;
+    }
 }
