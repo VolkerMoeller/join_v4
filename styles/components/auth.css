@@ -1,0 +1,26 @@
+.auth {
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 12px;
+    padding: 20px;
+    background: white;
+}
+
+.auth__form {
+    display: grid;
+    gap: 12px;
+}
+
+.auth__input {
+    width: 100%;
+}
+
+.auth__hint {
+    margin-top: 12px;
+}
+
+.auth__link {
+    background: none;
+    border: none;
+    text-decoration: underline;
+    cursor: pointer;
+}

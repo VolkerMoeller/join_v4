@@ -1,0 +1,10 @@
+body[data-layout="auth"] .appShell {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+}
+
+body[data-layout="auth"] #viewRoot {
+    width: min(420px, 100%);
+}
