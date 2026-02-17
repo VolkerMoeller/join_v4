@@ -1,0 +1,22 @@
+<section class="auth">
+    <h1>Log in</h1>
+
+    <form class="auth__form" data-action="LOGIN_SUBMIT">
+        <label class="auth__label">
+            Email
+            <input class="auth__input" name="email" type="email" autocomplete="username" required />
+        </label>
+
+        <label class="auth__label">
+            Password
+            <input class="auth__input" name="password" type="password" autocomplete="current-password" required />
+        </label>
+
+        <button class="auth__btn" type="submit">Log in</button>
+    </form>
+
+    <p class="auth__hint">
+        No account?
+        <button class="auth__link" type="button" data-nav="signup">Sign up</button>
+    </p>
+</section>

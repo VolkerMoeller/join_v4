@@ -1,4 +1,5 @@
 // src/router.js
+
 /**
  * @typedef {Object} ViewModule
  * @property {string} name
@@ -7,81 +8,94 @@
  * @property {(ctx: any) => void} updateContent
  * @property {(viewRoot: HTMLElement, ctx: any) => (void | (() => void))} [bindDom]
  * @property {(ctx: any) => void} [unmount]
+ * @property {'app'|'auth'} [layout]
+ * @property {boolean} [requiresAuth]
  */
 
-/** @type {Map<string, { initialized: boolean, module: ViewModule }>} */
 const registry = new Map();
 
 let active = {
-    name: null,
-    cleanup: null,
-    navToken: 0,
+  name: null,
+  cleanup: null,
+  navToken: 0,
 };
 
 export function registerView(module) {
-    registry.set(module.name, { initialized: false, module });
+  registry.set(module.name, { initialized: false, module });
 }
 
-/**
- * Central SPA routing function.
- * - loads view HTML
- * - ensures one-time initialization
- * - runs updateContent on every navigation
- * - closes overlays on route change
- * - supports cleanup/unmount
- * - guards against async race conditions
- *
- * @param {string} viewName
- * @param {HTMLElement} viewRoot
- * @param {any} ctx
- */
+function applyLayout(layout) {
+  document.body.dataset.layout = layout; // 'app' | 'auth'
+}
+
+function canAccess(viewName, ctx) {
+  const entry = registry.get(viewName);
+  const mod = entry?.module;
+  if (!mod) return false;
+
+  const requiresAuth = mod.requiresAuth ?? true; // Standard: private
+  const isLoggedIn = Boolean(ctx?.auth?.user);
+
+  // public views: requiresAuth=false
+  return !requiresAuth || isLoggedIn;
+}
+
 export async function setView(viewName, viewRoot, ctx) {
-    const entry = registry.get(viewName);
-    if (!entry) throw new Error(`Unknown view: ${viewName}`);
+  const entry = registry.get(viewName);
+  if (!entry) throw new Error(`Unknown view: ${viewName}`);
 
-    // Guard gegen Race-Conditions (langsames HTML + schnelles Klicken)
-    const token = ++active.navToken;
+  // Auth-Guard (Standard)
+  if (!canAccess(viewName, ctx)) {
+    viewName = 'login';
+  }
 
-    // Globale UI-Zustände explizit schließen (v4-Regel)
-    ctx?.overlay?.closeAll?.();
+  const guardedEntry = registry.get(viewName);
+  if (!guardedEntry) throw new Error(`Unknown view: ${viewName}`);
 
-    // Cleanup der vorherigen View (Listener etc.)
-    if (active.cleanup) {
-        try { active.cleanup(); } finally { active.cleanup = null; }
-    }
+  const token = ++active.navToken;
 
-    // Optionales unmount (Timer/Observer/etc.)
-    if (active.name) {
-        const prev = registry.get(active.name)?.module;
-        if (prev?.unmount) prev.unmount(ctx);
-    }
+  // explizit schließen
+  ctx?.overlay?.closeAll?.();
 
-    // HTML laden
-    const html = await entry.module.loadHtml();
+  // cleanup prev
+  if (active.cleanup) {
+    try { active.cleanup(); }
+    finally { active.cleanup = null; }
+  }
+
+  // unmount prev
+  if (active.name) {
+    const prev = registry.get(active.name)?.module;
+    try { prev?.unmount?.(ctx); } catch (e) { console.error(e); }
+  }
+
+  // layout setzen (vor render, damit CSS sofort stimmt)
+  applyLayout(guardedEntry.module.layout ?? 'app');
+
+  // load + render
+  const html = await guardedEntry.module.loadHtml();
+  if (token !== active.navToken) return;
+
+  viewRoot.innerHTML = html;
+
+  // init once
+  if (!guardedEntry.initialized) {
+    await guardedEntry.module.ensureInitialized(ctx);
+    guardedEntry.initialized = true;
     if (token !== active.navToken) return;
+  }
 
-    // Render: DOM ersetzen
-    viewRoot.innerHTML = html;
+  // bindDom (optional cleanup)
+  let cleanup = null;
+  if (typeof guardedEntry.module.bindDom === 'function') {
+    const res = guardedEntry.module.bindDom(viewRoot, ctx);
+    if (typeof res === 'function') cleanup = res;
+  }
 
-    // init once (kein DOM-Ref speichern!)
-    if (!entry.initialized) {
-        await entry.module.ensureInitialized(ctx);
-        entry.initialized = true;
-        if (token !== active.navToken) return;
-    }
+  // update always
+  guardedEntry.module.updateContent(ctx);
 
-    // bindDom darf cleanup zurückgeben
-    let cleanup = null;
-    if (typeof entry.module.bindDom === 'function') {
-        const res = entry.module.bindDom(viewRoot, ctx);
-        if (typeof res === 'function') cleanup = res;
-    }
-
-    // update always
-    entry.module.updateContent(ctx);
-
-    // active setzen
-    active.name = viewName;
-    active.cleanup = cleanup;
+  // active
+  active.name = viewName;
+  active.cleanup = cleanup;
 }
-
