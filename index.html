@@ -15,14 +15,17 @@
 
 </head>
 
-<body>
+<body data-layout="app">
+
     <div class="app" id="appRoot">
         <header class="app__header">
             <div class="app__brand mobile-only">JOIN</div>
             <div class="app__brand desktop-only">Kanban Project Management Tool</div>
         </header>
 
-        <main class="app__main" id="viewRoot" aria-live="polite"></main>
+        <div class="appShell">
+            <main class="app__main" id="viewRoot" aria-live="polite"></main>
+        </div>
 
         <aside class="sidebar" aria-label="Primary">
             <div class="sidebar__logo desktop-only">JOIN</div>
@@ -37,9 +40,8 @@
                 <button class="btn btn--legal" data-nav="privacy" type="button">Privacy Policy</button>
             </nav>
         </aside>
-
-
         <div class="overlay-root" id="overlayRoot" aria-hidden="true"></div>
+
 
         <script type="module" src="./src/app.js"></script>
 </body>
